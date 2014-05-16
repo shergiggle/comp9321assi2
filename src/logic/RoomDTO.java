@@ -3,13 +3,13 @@ package logic;
 public class RoomDTO {
 
 	private int roomNumber;
-	private String type = "";
+	private int typeid;
 	private String availability = "";
 	private int hotelid;
 	
-	public RoomDTO(int roomNumber, String type, String availability, int hotelid){
+	public RoomDTO(int roomNumber, int typeid, String availability, int hotelid){
 		this.setRoomNumber(roomNumber);
-		this.setType(type);
+		this.setType(typeid);
 		this.setAvailability(availability);
 		this.setHotelid(hotelid);
 		
@@ -23,12 +23,12 @@ public class RoomDTO {
 		this.roomNumber = roomNumber;
 	}
 
-	public String getType() {
-		return type;
+	public int getType() {
+		return typeid;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setType(int typeid) {
+		this.typeid = typeid;
 	}
 
 	public String getAvailability() {
