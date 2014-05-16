@@ -1,4 +1,4 @@
-package logic;
+package jdbc;
 
 public class RoomDTO {
 
