@@ -19,7 +19,6 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 import logic.*;
-
 import Exception.*;
 
 public class DAO {
