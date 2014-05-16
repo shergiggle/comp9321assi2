@@ -8,8 +8,12 @@
 <title>Hotel Management</title>
 </head>
 <body>
-	<form action="consumer" method="POST">
-		<!-- all bookings made that have not past are shown here -->
+	<form action="reception" method="POST">
+	Room To Check-Out:<input type="text" name="checkoutroom">
+	<input type="hidden" name="action" value="checkoutroom">
+	<input type="submit" value="Check-In"><br>
+	<input type="hidden" name="action=" value="cancel">
+	<input type="submit" value="Cancel"><br><br>
 	</form>
 </body>
 </html>

@@ -1,3 +1,4 @@
+drop table staff;
 drop table customerbooking;
 drop table room;
 drop table roomtype;
@@ -46,3 +47,13 @@ create table customerbooking(
 	foreign key (roomtypeid) references roomtype(id),
 	constraint chk_valid_date check (startdate<enddate)
 	);
+	
+create table staff(
+	id int not null generated always as identity(start with 1, increment by 1),
+	firstname varchar(30) not null,
+	lastname varchar(30) not null,
+	password varchar(30)not null,
+	access varchar(30) not null,
+	primary key(id),
+	constraint chk_access check (access = 'reception' or access = 'owner')
+);

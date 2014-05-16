@@ -8,8 +8,11 @@
 <title>Hotel Management</title>
 </head>
 <body>
-	<form action="consumer" method="POST">
-		<!-- all bookings made that have not past are shown here -->
+	<form action="reception" method="POST">
+		User ID:<input type="text" name="userid"><br>
+		Password:<input type="text" name="password"><br>
+		<input type="hidden" name="action" value="login">
+		<input type="submit" value="Login">
 	</form>
 </body>
 </html>

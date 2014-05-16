@@ -7,10 +7,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import Exception.InvalidActionException;
+
 /**
  * Servlet implementation class ReceptionServlet
  */
-@WebServlet("/ReceptionServlet")
+@WebServlet("/reception")
 public class ReceptionServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -27,6 +29,7 @@ public class ReceptionServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		doPost(request, response);
 	}
 
 	/**
@@ -34,6 +37,41 @@ public class ReceptionServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		String forwardPage = "";
+		String action = request.getParameter("action");
+		
+		if(action.equals(null)){
+			try {
+				throw new InvalidActionException();
+			} catch (InvalidActionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(action.equals("login")){
+			forwardPage = "receptionView.jsp";
+		}
+		
+		if(action.equals("checkin")){
+			forwardPage = "receptionCheckin.jsp";
+		}
+		
+		if(action.equals("checkout")){
+			forwardPage = "receptionCheckout.jsp";
+		}
+		
+		if(action.equals("checkinroom")){
+			forwardPage = "receptionView.jsp";
+		}
+		
+		if(action.equals("checkoutroom")){
+			forwardPage = "receptionView.jsp";
+		}
+		
+		if(action.equals("cancel")){
+			forwardPage = "receptionView.jsp";
+		}
+		
 	}
 
 }
