@@ -9,6 +9,7 @@
 </head>
 <body>
 	<form action="owner" method="POST">
+		<br><br>${message }<br>
 		User ID:<input type="text" name="userid"><br>
 		Password:<input type="text" name="password"><br>
 		<input type="hidden" name="action" value="login">

@@ -254,4 +254,61 @@ public class DAO {
 		sql.setString(8, uniquestring);
 		ResultSet res = sql.executeQuery();
 	}
+	
+	public OverallHotelsDTO getHotelTotalOccupancy(int hotelid) throws SQLException{
+		OverallHotelsDTO ownerHotel = null;
+		PreparedStatement sql = null;
+		
+	//--number of booked rooms for each hotel		
+		sql = connection.prepareStatement("select count(rt.name) as booked from roomavailability ra"
+											+ " join roomtype rt on ra.roomtypeid = rt.id"
+											+ " join customerbooking cb on (cb.id = ra.customerbookingid)"
+											+ " join hotel h on (cb.hotelid = h.id)"
+											+ " where h.id = ?;");
+		sql.setInt(1, hotelid);
+		ResultSet resbooked = sql.executeQuery();
+		
+	//--number of total rooms for each hotel
+		sql = connection.prepareStatement("select count(r.id) as total from room r " +
+											" join hotel h on h.id = r.hotelid " +
+											" where h.id = ?;");
+		sql.setInt(1, hotelid);
+		ResultSet resavailable = sql.executeQuery();
+	
+	//--get hotel name
+		sql = connection.prepareStatement("select name from hotel" +
+											" where id = ?;");
+		sql.setInt(1, hotelid);
+		ResultSet hotelname = sql.executeQuery();
+		
+		int availum = resavailable.getInt("total");
+		int booknum = resbooked.getInt("booked");
+		String name = hotelname.getString("name");
+		int available = availum - booknum;
+		
+		ownerHotel = new OverallHotelsDTO(name, booknum, available);
+		
+		return ownerHotel;
+	}
+	
+	public StaffDTO getStaff(String username, String password) throws SQLException{
+		StaffDTO staff = null;
+		PreparedStatement sql = null;
+		//-- get everything in staff table
+		sql = connection.prepareStatement("select firstname, lastname, password, access " +
+											" from staff" +
+											" where firstname = ?" +
+											" and password = ?;");
+		sql.setString(1, username);
+		sql.setString(2, password);
+		ResultSet staffinfo = sql.executeQuery();
+		
+		String fname = staffinfo.getString("firstname");
+		String lname = staffinfo.getString("lastname");
+		String pw = staffinfo.getString("password");
+		String access = staffinfo.getString("access");
+		
+		staff = new StaffDTO(fname, lname, pw, access);
+		return staff;
+	}
 }

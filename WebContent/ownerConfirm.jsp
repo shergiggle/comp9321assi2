@@ -10,6 +10,12 @@
 <body>
 	<form action="owner" method="POST">
 <!-- returns the confirmation of the discount -->
+	City: ${city }<br>
+	Hotel: ${hotelname }<br>
+	Room Type: ${type }<br>
+	Start Date: ${startdate }<br>
+	End Date: ${enddate }<br>
+	Amount: ${amount }%<br>
 	<input type="hidden" name="action" value="confirm">
 	<input type="submit" value="Confirm">
 	<input type="hidden" name="action" value="reset">

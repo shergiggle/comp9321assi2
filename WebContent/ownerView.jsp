@@ -22,8 +22,8 @@
 	<tr>
 		<c:forEach items = "availabilityList" var="list">
 		<td>${list.name }</td>
-		<td>${list. }</td>
-		<td>${list. }</td>
+		<td>${list.occupied }</td>
+		<td>${list.available }</td>
 		</c:forEach>
 	</tr>
 </table>

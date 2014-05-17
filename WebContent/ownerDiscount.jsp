@@ -12,7 +12,7 @@
 City: <input type="text" name="city"><br>
 Hotel:<input type="text" name="hotel"><br>
 Room Type:<input type="text" name="type"><br>
-Start: Day<select name="startday">
+Start: Date<select name="startdate">
 				<c:forEach var="i" begin="1" end="31">
 					<option value="${i }">${i }</option>
 				</c:forEach>
@@ -27,7 +27,7 @@ Start: Day<select name="startday">
 					<option value="${i }">${i }</option>
 				</c:forEach>
 			</select><br>
-End: Day<select name="endday">
+End: date<select name="enddate">
 			<c:forEach var="i" begin="1" end="31">
 				<option value="${i }">${i }</option>
 			</c:forEach>
@@ -46,7 +46,7 @@ End: Day<select name="endday">
 		
 Amount: <select name="amount">
 		<c:forEach var="i" begin="00" end="55" step="5">
-			<option value="${i }">${i }</option>
+			<option value="${i }">${i } %</option>
 		</c:forEach>
 		</select>
 		
