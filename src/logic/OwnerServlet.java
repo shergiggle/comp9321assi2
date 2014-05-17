@@ -76,7 +76,7 @@ public class OwnerServlet extends HttpServlet {
 		
 		if(action.equals("confirm")){
 			message = "Discount Applied";
-			request.setAttribute("message", message)
+			request.setAttribute("message", message);
 			forwardPage = "ownerView.jsp";
 		}
 		
