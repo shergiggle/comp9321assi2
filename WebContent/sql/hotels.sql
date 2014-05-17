@@ -22,8 +22,8 @@ create table roomtype(
 
 create table room(
 	id int not null generated always as identity(start with 1, increment by 1),
-	roomnumber int not null,
 	roomtypeid int not null,
+	roomnumber int not null,
 	availability varchar(30) default 'available' not null,
 	hotelid int not null,
 	primary key(id),
