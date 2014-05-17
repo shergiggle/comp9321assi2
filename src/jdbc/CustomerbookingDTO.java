@@ -1,4 +1,4 @@
-package logic;
+package jdbc;
 
 import java.sql.Date;
 
