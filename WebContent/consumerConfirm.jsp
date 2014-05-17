@@ -12,12 +12,34 @@
 		<!-- search results shown here without number of rooms selection -->
 		<table>
 			<tr>
-				<th>something
-				<th>
+				<th>City</th>
+				<th>Price</th>
+				<th>CheckinDate</th>
+				<th>CheckoutDate</th>
+
 			</tr>
+		<c:forEach items="${cost}" var="list">
+			<tr>
+
+				<td>${city}</td>
+				<td>${cost.price}</td>
+				<td>${checkin}</td>
+				<td>${checkout}</td>
+				
+			</tr>
+		</c:forEach>
 		</table><br><br>
+		
+		Hotel: 	<select name="selectedHotel">
+					<c:forEach items="${resultlist }" var="hotels">
+						<option value="${hotels.name}">${hotels.name}</option>
+					</c:forEach>
+				</select>			
+
+
 		<input type="hidden" name="action" value="checkout"> 
-		<input type="submit" value="Checkout"><br> 
+		<input type="submit" value="Checkout"><br>
+
 		<input type="hidden" name="action" value="reset"> 
 		<input type="submit" value="Back to Search">
 	</form>

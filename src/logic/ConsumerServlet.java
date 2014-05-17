@@ -1,6 +1,7 @@
 package logic;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -9,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,12 +21,13 @@ import Exception.InvalidActionException;
 import Exception.ServiceLocatorException;
 import jdbc.DAO;
 import jdbc.HotelDTO;
+import jdbc.RoomPriceDTO;
 import jdbc.SearchDTO;
 
 /**
  * Servlet implementation class ConsumerServlet
  */
-@WebServlet("/consumer")
+@WebServlet("/ConsumerServlet")
 public class ConsumerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private DAO dao;
@@ -54,6 +57,12 @@ public class ConsumerServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		String forwardPage = "";
 		String action = request.getParameter("action");
+		Date checkin = null;
+		Date checkout = null;
+		String city = null;
+		String hotel = null;
+		ArrayList<HotelDTO> hotels = new ArrayList<HotelDTO>();
+		String[] roomtypes = null;
 		
 		if(action.equals(null)){
 			try {
@@ -72,7 +81,7 @@ public class ConsumerServlet extends HttpServlet {
 			String checkoutmonth = request.getParameter("endmonth");
 			String checkoutyear = request.getParameter("endyear");
 			
-			String city = request.getParameter("cityChosen");
+			city = request.getParameter("cityChosen");
 			
 			String maxprice = request.getParameter("maxprice");
 			
@@ -99,7 +108,8 @@ public class ConsumerServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+			 checkin = checkinsqldate;
+			 checkout = checkoutsqldate;
 			
 			//send the info
 			request.setAttribute("checkin", checkinsqldate);
@@ -112,14 +122,22 @@ public class ConsumerServlet extends HttpServlet {
 		}
 		if(action.equals("confirm")){
 			
-			String[] roomtypes = request.getParameterValues("selectedrooms");
-			String city = request.getParameter("city");
-			ArrayList<HotelDTO> hotels = null;
+			roomtypes = request.getParameterValues("selectedrooms");
+			city = request.getParameter("city");
+			hotels = new ArrayList<HotelDTO>();
+			ArrayList<RoomPriceDTO> roomprice = new ArrayList<RoomPriceDTO>();
+			//foreach chosen roomtype get price
 			
-			//foreach roomtype get price
-			
-			
-			
+			for(String room : roomtypes){
+				try {
+					RoomPriceDTO tempPrice = dao.getRoomTypePrice(room);
+					roomprice.add(tempPrice);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
 			
 			try {
 				hotels = dao.getHotelsinCity(city);
@@ -129,24 +147,93 @@ public class ConsumerServlet extends HttpServlet {
 			}
 			
 			
+			request.setAttribute("cost", roomprice);
 			request.setAttribute("city", city);
 			request.setAttribute("resultlist", hotels);
+			
 			forwardPage = "ConsumerConfirm.jsp";
 			
 		}
 		if(action.equals("checkout")){
-			//display selected rooms
-			//process creditcard and mailsender stuff
-			
+			// take roomtypes selected, hotelselected, checkin, checkout
+			hotel = request.getParameter("selectedHotel");
+			forwardPage = "ConsumerCheckout.jsp";
 		}
 		if(action.equals("complete")){
-			//sendmail
+			String firstname = request.getParameter("firstname");
+			String lastname = request.getParameter("lastname");
+			String email = request.getParameter("email");
+			int hotelid = 0;
+			String generatepin = PINGenerator.generate();
+			// take roomtypes selected, hotelselected, checkin, checkout
+			//get the hotel id
+			try {
+				hotelid = dao.getHotelId(hotel);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			//make customer
+			try {
+				dao.makeCustomer(firstname, lastname);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			try {
+				int customerid = dao.getLastInsertedCustomerId();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			for(String room : roomtypes){
+				int roomtypeid = 0;
+				try {
+					roomtypeid = dao.getRoomtypeid(room);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				try {
+					dao.makeBooking(hotelid, roomtypeid, checkin, checkout, firstname, lastname, generatepin, generatepin );
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			//send email
+			String fromAddress = "9321hotel@gmail.com";
+			String toAddress = email;
+			String subject = request.getParameter("name");
+			StringBuffer mailBody = new StringBuffer();
+			URL url = new URL(request.getScheme(),
+					request.getServerName(), request.getServerPort(),
+					request.getContextPath());
+			mailBody.append("pin: " + generatepin + ", link: "
+					+ url.toExternalForm() + "/BookingServlet/"
+					+ generatepin);
+			MailSender.sendEmail(fromAddress, toAddress, subject,
+					mailBody.toString());
+
+			
 			
 		}
 		if(action.equals("reset")){
 			
-			
+			hotel = null;
+			checkin = null;
+			checkout = null;
+			city = null;
+			hotels = new ArrayList<HotelDTO>();
+			roomtypes = null;
+			forwardPage = "consumerMain.jsp";
 		}
+		
+		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/"+forwardPage);
+		dispatcher.forward(request, response);
 		
 	}
 	
