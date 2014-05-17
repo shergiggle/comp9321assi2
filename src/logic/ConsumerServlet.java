@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import Exception.InvalidActionException;
 import Exception.ServiceLocatorException;
 import jdbc.DAO;
-import jdbc.SearchDTO;
+
 
 /**
  * Servlet implementation class ConsumerServlet
