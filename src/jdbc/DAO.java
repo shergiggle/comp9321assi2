@@ -93,7 +93,7 @@ public class DAO {
 		PreparedStatement sql = null;
 		
 		
-		String query = "select h.city, h.name, rt.cost, rt.name, rt.price, count(rt.roomtype) as count"
+		String query = "select h.id, h.city, h.name as hotelname, rt.cost, rt.name as roomtype, count(rt.roomtype) as count"
 				+ " from roomavailability ra join roomtype rt on ra.roomtypeid = rt.roomtypeid"
 				+ " join customerbooking cb on (cb.id = ra.customerbookingid)"
 				+ " join hotel on (h.id = cb.hotelid)"
@@ -117,8 +117,18 @@ public class DAO {
 		ResultSet res = sql.executeQuery();
 		
 		while(res.next()){
-			
+			int hotelid = res.getInt("id");
+			String hotellocation = res.getString("city");
+			String hotelname = res.getString("hotelname");
+			int roomcost = res.getInt("cost");
+			String roomtype = res.getString("roomtype");
+			int count = res.getInt("count");
+			SearchDTO searchres = new SearchDTO(hotelid, hotellocation, hotelname, roomcost, roomtype, count);
+			search.add(searchres);
 		}
+		
+		res.close();
+		sql.close();
 		
 		return search;	
 	}

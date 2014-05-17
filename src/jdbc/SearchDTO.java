@@ -7,14 +7,16 @@ public class SearchDTO {
 	private String hotelName;
 	private int price;
 	private String roomtype;
+	private int count;
 	
 	
-	public SearchDTO(int id, String city, String hotelName, int price, String roomtype){
+	public SearchDTO(int id, String city, String hotelName, int price, String roomtype, int count){
 		this.setId(id);
 		this.setCity(city);
 		this.setHotelName(hotelName);
 		this.setRoomtype(roomtype);
 		this.setPrice(price);
+		this.setCount(count);
 	}
 
 
@@ -65,5 +67,15 @@ public class SearchDTO {
 
 	public void setRoomtype(String roomtype) {
 		this.roomtype = roomtype;
+	}
+
+
+	public int getCount() {
+		return count;
+	}
+
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 }

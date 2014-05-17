@@ -8,7 +8,7 @@
 <title>Hotel Management</title>
 </head>
 <body>
-<form action="consumer" method="POST">
+<form action="" method="POST">
 <!-- Main page that is shown in startup -->
 	City:<select name="cityChosen">
 		<c:forEach items="cities" var="city">

@@ -8,23 +8,23 @@
 <title>Hotel Management</title>
 </head>
 <body>
-<form action="consumer" method="POST">
+<form action="" method="POST">
 <!-- search results shown here -->
 	<table>
 		<tr>
-			<th>City<th>
-			<th>Name<th>
-			<th>Num Available<th>
-			<th>Cost<th>
-			<th>Number of Rooms<th>
+			<th>City</th>
+			<th>RoomType</th>
+			<th>Num Available</th>
+			<th>Cost</th>
+			<th>Select</th>
 		</tr>
 		<tr>
 		<c:forEach items="${resultlist }" var="list">
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><input type="text" name="numrooms" value="${list. }"></td>
+			<td>${list.city}</td>
+			<td>${list.roomtype}</td>
+			<td>${list.count}</td>
+			<td>${list.price}</td>
+			<td><input type="checkbox" name="selectedrooms[]" value="${list.roomtype}"></td>
 		</c:forEach>
 		</tr>
 	</table>

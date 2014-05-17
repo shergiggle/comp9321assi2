@@ -8,11 +8,11 @@
 <title>Hotel Management</title>
 </head>
 <body>
-	<form action="consumer" method="POST">
+	<form action="" method="POST">
 		<!-- search results shown here without number of rooms selection -->
 		<table>
 			<tr>
-				<th>somerthing
+				<th>something
 				<th>
 			</tr>
 		</table><br><br>

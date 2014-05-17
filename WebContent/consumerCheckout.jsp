@@ -8,7 +8,7 @@
 <title>Hotel Management</title>
 </head>
 <body>
-	<form action="consumer" method="POST">
+	<form action="" method="POST">
 		First Name:<input type="text" name="firstname"><br> 
 		Last Name:<input type="text" name="lastname"><br> 
 		Email:<input type="text" name="email"><br> 
