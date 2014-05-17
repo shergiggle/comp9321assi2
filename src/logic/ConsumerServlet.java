@@ -24,7 +24,7 @@ import jdbc.SearchDTO;
 /**
  * Servlet implementation class ConsumerServlet
  */
-@WebServlet("/ConsumerServlet")
+@WebServlet("/consumer")
 public class ConsumerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private DAO dao;

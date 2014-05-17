@@ -26,8 +26,8 @@ create table roomtype(
 
 create table room(
 	id int not null generated always as identity(start with 1, increment by 1),
-	number int not null,
-	typeid int not null,
+	roomtypeid int not null,
+	roomnumber int not null,
 	availability varchar(30) default 'available' not null,
 	hotelid int not null,
 	primary key(id),
@@ -62,7 +62,7 @@ create table customerbooking(
 	
 create table roomavailability (
 	id int not null generated always as identity,
-	roomid int,
+	roomid int not null,
 	customerbookingid int not null,
 	roomtypeid int not null,
 	extrabed int not null,
@@ -70,7 +70,7 @@ create table roomavailability (
 	foreign key (roomid) references room(id),
 	foreign key (customerbookingid) references customerbooking(id),
 	foreign key (roomtypeid) references roomtype(id),
-	constraint chk_boolean_extra_bed check (extra_bed=0 or extra_bed=1)
+	constraint chk_boolean_extra_bed check (extrabed=0 or extrabed=1)
 );
 	
 create table booking (
@@ -100,6 +100,6 @@ create table discount (
 	hotelid int not null,
 	primary key (id),
 	foreign key (roomtypeid) references roomtype(id),
-	foreign key (hotelid) references hotel(id)
+	foreign key (hotelid) references hotel(id),
 	constraint chk_discountedprice check (discountedprice>=0),
 );
