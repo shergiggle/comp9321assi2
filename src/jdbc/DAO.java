@@ -72,8 +72,8 @@ public class DAO {
 			res = ps.executeQuery();
 			
 			while (res.next()) {
-				int roomnumber = res.getInt("roomnumber");
-				String roomtype = res.getString("roomtype");
+				int roomnumber = res.getInt("number");
+				String roomtype = res.getString("type");
 				String availability = res.getString("availability");
 				int hotelid = res.getInt("hotelid");
 				rooms.add(new RoomDTO(roomnumber, roomtype, availability, hotelid));

@@ -1,3 +1,4 @@
+drop table discount;
 drop table staff;
 drop table booking;
 drop table roomavailability;
@@ -25,8 +26,8 @@ create table roomtype(
 
 create table room(
 	id int not null generated always as identity(start with 1, increment by 1),
-	roomnumber int not null,
-	roomtypeid int not null,
+	number int not null,
+	typeid int not null,
 	availability varchar(30) default 'available' not null,
 	hotelid int not null,
 	primary key(id),
@@ -88,4 +89,17 @@ create table staff(
 	access varchar(30) not null,
 	primary key(id),
 	constraint chk_access check (access = 'reception' or access = 'owner')
+);
+
+create table discount (
+	id int not null generated always as identity,
+	roomtypeid int not null,
+	startdate date not null,
+	enddate date not null,
+	discountedprice int not null,
+	hotelid int not null,
+	primary key (id),
+	foreign key (roomtypeid) references roomtype(id),
+	foreign key (hotelid) references hotel(id)
+	constraint chk_discountedprice check (discountedprice>=0),
 );
