@@ -18,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import Exception.InvalidActionException;
 import Exception.ServiceLocatorException;
 import jdbc.DAO;
+import jdbc.HotelDTO;
 import jdbc.SearchDTO;
-
 
 /**
  * Servlet implementation class ConsumerServlet
@@ -102,6 +102,9 @@ public class ConsumerServlet extends HttpServlet {
 			
 			
 			//send the info
+			request.setAttribute("checkin", checkinsqldate);
+			request.setAttribute("checkout", checkoutsqldate);
+			request.setAttribute("city", city);
 			request.setAttribute("resultlist", searchResults);
 			
 			//send forwardpage
@@ -109,6 +112,26 @@ public class ConsumerServlet extends HttpServlet {
 		}
 		if(action.equals("confirm")){
 			
+			String[] roomtypes = request.getParameterValues("selectedrooms");
+			String city = request.getParameter("city");
+			ArrayList<HotelDTO> hotels = null;
+			
+			//foreach roomtype get price
+			
+			
+			
+			
+			try {
+				hotels = dao.getHotelsinCity(city);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			request.setAttribute("city", city);
+			request.setAttribute("resultlist", hotels);
+			forwardPage = "ConsumerConfirm.jsp";
 			
 		}
 		if(action.equals("checkout")){

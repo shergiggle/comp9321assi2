@@ -8,6 +8,8 @@ public class SearchDTO {
 	private int price;
 	private String roomtype;
 	private int count;
+	private boolean discounted;
+	private boolean peak;
 	
 	
 	public SearchDTO(int id, String city, String hotelName, int price, String roomtype, int count){
@@ -17,6 +19,8 @@ public class SearchDTO {
 		this.setRoomtype(roomtype);
 		this.setPrice(price);
 		this.setCount(count);
+		setDiscounted(false);
+		setPeak(false);
 	}
 
 
@@ -77,5 +81,25 @@ public class SearchDTO {
 
 	public void setCount(int count) {
 		this.count = count;
+	}
+
+
+	public boolean isDiscounted() {
+		return discounted;
+	}
+
+
+	public void setDiscounted(boolean discounted) {
+		this.discounted = discounted;
+	}
+
+
+	public boolean isPeak() {
+		return peak;
+	}
+
+
+	public void setPeak(boolean peak) {
+		this.peak = peak;
 	}
 }
