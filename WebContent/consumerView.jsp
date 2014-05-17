@@ -8,7 +8,7 @@
 <title>Hotel Management</title>
 </head>
 <body>
-	<form action="" method="POST">
+	<form action="consumer" method="POST">
 		<!-- all bookings made that have not past are shown here -->
 	</form>
 </body>

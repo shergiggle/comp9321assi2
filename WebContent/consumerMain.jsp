@@ -8,42 +8,44 @@
 <title>Hotel Management</title>
 </head>
 <body>
-<form action="" method="POST">
+<form action="consumer" method="POST">
 <!-- Main page that is shown in startup -->
 	City:<select name="cityChosen">
-		<c:forEach items="cities" var="city">
-			<option>city name goes here</option>
-		</c:forEach>
+		<option value="Sydney">Sydney</option>
+		<option value="Melbourne">Melbourne</option>
+		<option value="Brisbane">Brisbane</option>
+		<option value="Adelaide">Adelaide</option>
+		<option value="Hobart">Hobart</option>
 	</select><br><br>	
 	Number of Rooms: <input type="text" name="numrooms"><br><br>
 	Check-In: Day<select name="startday">
 				<c:forEach var="i" begin="1" end="31">
-					<option>${i }</option>
+					<option value="${i }">${i }</option>
 				</c:forEach>
 			</select>
 		Month<select name="startmonth">
 				<c:forEach var="i" begin="00" end="12">
-					<option>${i }</option>
+					<option value="${i }">${i }</option>
 				</c:forEach>
 			</select>
 		Year<select name="startyear">
 				<c:forEach var="i" begin="2014" end="2017">
-					<option>${i }</option>
+					<option value="${i }">${i }</option>
 				</c:forEach>
 			</select><br><br>
 	Check-Out: Day<select name="endday">
 				<c:forEach var="i" begin="1" end="31">
-					<option>${i }</option>
+					<option value="${i }">${i }</option>
 				</c:forEach>
 			</select>
 		Month<select name="endmonth">
 				<c:forEach var="i" begin="00" end="12">
-					<option>${i }</option>
+					<option value="${i }">${i }</option>
 				</c:forEach>
 			</select>
 		Year<select name="endyear">
 				<c:forEach var="i" begin="2014" end="2017">
-					<option>${i }</option>
+					<option value="${i }">${i }</option>
 				</c:forEach>
 			</select><br><br>
 	Max Price:<input type="text" name="maxprice">
