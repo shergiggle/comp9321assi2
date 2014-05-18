@@ -17,10 +17,9 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import exception.MailSenderException;
-import common.ServiceLocatorException;
-
+import Exception.*;
  
+@SuppressWarnings("unused")
 public class MailSender{
  
 	static Logger logger = Logger.getLogger(MailSender.class.getName());

@@ -1,6 +1,9 @@
-insert into STAFF values (default, 'steve', 'steve', 'reception', 'reception');
-insert into STAFF values (default, 'bob', 'bob', 'reception', 'reception');
-insert into STAFF values (default, 'kate', 'kate', 'owner', 'owner');
+insert into STAFF values (default, 'steve', 'steve', 'password', 'reception', 1);
+insert into STAFF values (default, 'bob', 'bob', 'password', 'reception', 2);
+insert into STAFF values (default, 'andrew', 'andrew', 'password', 'reception', 3);
+insert into STAFF values (default, 'lauren', 'lauren', 'password', 'reception', 4);
+insert into STAFF values (default, 'kim', 'kim', 'password', 'reception', 5);
+insert into STAFF values (default, 'kate', 'kate', 'password', 'owner', 1);
 
 insert into HOTEL values (default, 'Ibis', 'Sydney');
 insert into HOTEL values (default, 'Mecure', 'Melbourne');

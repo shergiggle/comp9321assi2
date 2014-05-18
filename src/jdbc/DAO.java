@@ -337,8 +337,9 @@ public class DAO {
 		String lname = staffinfo.getString("lastname");
 		String pw = staffinfo.getString("password");
 		String access = staffinfo.getString("access");
+		int hotelid = staffinfo.getInt("hotelid");
 		
-		staff = new StaffDTO(fname, lname, pw, access);
+		staff = new StaffDTO(fname, lname, pw, access, hotelid);
 		
 		staffinfo.close();
 		sql.close();
@@ -420,6 +421,9 @@ public class DAO {
 
 		ResultSet res = sql.executeQuery();
 		hotelid = res.getInt("id");
+		
+		res.close();
+		sql.close();
 
 		return hotelid;	
 	}

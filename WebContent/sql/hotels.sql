@@ -87,7 +87,9 @@ create table staff(
 	lastname varchar(30) not null,
 	password varchar(30)not null,
 	access varchar(30) not null,
+	hotelid int not null,
 	primary key(id),
+	foreign key (hotelid) references hotel(id),
 	constraint chk_access check (access = 'reception' or access = 'owner')
 );
 
