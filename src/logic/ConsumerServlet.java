@@ -27,7 +27,7 @@ import jdbc.SearchDTO;
 /**
  * Servlet implementation class ConsumerServlet
  */
-@WebServlet("/ConsumerServlet")
+@WebServlet("/consumer")
 public class ConsumerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private DAO dao;
@@ -37,7 +37,7 @@ public class ConsumerServlet extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ConsumerServlet() {
+    public ConsumerServlet() throws ServletException{
         super();
 		dao = new DAO();
     }
@@ -84,6 +84,7 @@ public class ConsumerServlet extends HttpServlet {
 			city = request.getParameter("cityChosen");
 			
 			String maxprice = request.getParameter("maxprice");
+			int price = Integer.parseInt(maxprice);
 			
 			java.sql.Date checkinsqldate = null;
 			try {
@@ -103,7 +104,7 @@ public class ConsumerServlet extends HttpServlet {
 			//needs a select statement here
 			ArrayList<SearchDTO> searchResults = new ArrayList<SearchDTO>();
 			try {
-				searchResults = dao.getSearchResults(checkinsqldate, checkoutsqldate, city, maxprice);
+				searchResults = dao.getSearchResults(checkinsqldate, checkoutsqldate, city, price);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -213,7 +214,7 @@ public class ConsumerServlet extends HttpServlet {
 					request.getServerName(), request.getServerPort(),
 					request.getContextPath());
 			mailBody.append("pin: " + generatepin + ", link: "
-					+ url.toExternalForm() + "/BookingServlet/"
+					+ url.toExternalForm() + "/BookingServlet/?pin="
 					+ generatepin);
 			MailSender.sendEmail(fromAddress, toAddress, subject,
 					mailBody.toString());

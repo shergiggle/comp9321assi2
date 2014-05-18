@@ -30,12 +30,12 @@ public class DAO {
 	public DAO () {
 		try {
 			connection = DBConnectionFactory.getConnection();
+			logger.info("created connection");
 		} catch (ServiceLocatorException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		logger.info("Got connection");
 	}
 
 	public List<HotelDTO> getAllHotels(){
@@ -88,19 +88,20 @@ public class DAO {
 	}
 
 	public ArrayList<SearchDTO> getSearchResults(Date checkinsqldate,
-			Date checkoutsqldate, String city, String maxprice) throws SQLException {
+			Date checkoutsqldate, String city, int maxprice) throws SQLException {
 		ArrayList<SearchDTO> search = new ArrayList<SearchDTO>();
 		PreparedStatement sql = null;
-		ResultSet discountPrice = null;
+		//ResultSet discountPrice = null;
 
 		sql = connection.prepareStatement("select h.id, h.city as hotelname, rt.cost, rt.name as roomtype, count(rt.name) as count"
 				+ " from hotel h join room r on r.hotelid = h.id"
 				+ " join roomtype rt on rt.id = r.roomtypeid"
 				+ " where h.city = ?"
-				+ " and rt.cost <= ?" +
-				" group by h.id, h.city, rt.cost, rt.name");
+				+ " and rt.cost <= ?"
+				+ " group by h.id, h.city, rt.cost, rt.name");
+		
 		sql.setString(1, city);
-		sql.setString(2, maxprice);
+		sql.setInt(2, maxprice);
 		ResultSet resAll = sql.executeQuery();
 //-------------------------
 		
@@ -138,12 +139,13 @@ public class DAO {
 			String roomType = (String)iter.next();
 			int price = allSelectPrice.get(roomType);
 			int count = allSelectCount.get(roomType);
-			
+			System.out.print(roomType+"\n\n\n\n");
 			//new query to select hotel id, hotel city, hotelname where rt.name like roomtype
-			sql = connection.prepareStatement("select h.id as hotelid, h.name as hotelname, h.city from hotel"
+			sql = connection.prepareStatement("select h.id as hotelid, h.name as hotelname, h.city from hotel h"
 					+ "join room r on r.hotelid = h.id"
 					+ "join roomtype rt on rt.id = r.roomtypeid"
-					+ "where rt.name = ?");
+					+ "where rt.name = ?"
+					+ "group by h.id, h.name, h.city");
 			sql.setString(1, roomType);
 			ResultSet details = sql.executeQuery();
 			
@@ -162,8 +164,9 @@ public class DAO {
 		ArrayList<HotelDTO> hotelname = null;
 		PreparedStatement sql = null;
 		String query = "select h.name, h.city"
-				+ "from hotel"
-				+ "where h.city = ?";
+				+ "from hotel h"
+				+ "where h.city = ?"
+				+ "group by h.name, h.city";
 		sql = connection.prepareStatement(query);
 		sql.setString(1, city);
 		
@@ -174,6 +177,9 @@ public class DAO {
 			HotelDTO hname = new HotelDTO(temphotelname, tempcity);
 			hotelname.add(hname);
 		}
+		
+		res.close();
+		sql.close();
 		
 		return hotelname;
 	}
@@ -187,7 +193,10 @@ public class DAO {
 		ResultSet res = sql.executeQuery();
 		res.next();
 			RoomPriceDTO tempprice = new RoomPriceDTO(res.getInt("cost"), res.getString("name"));
-				
+		
+			res.close();
+			sql.close();
+			
 		return tempprice;
 	}
 
@@ -195,7 +204,7 @@ public class DAO {
 		int hotelid = 0;
 		
 		PreparedStatement sql = null;
-		String query = "select id from hotel where name = ?";
+		String query = "select id from hotel where name = ? and city = ?";
 		sql = connection.prepareStatement(query);
 		sql.setString(1, name);
 		
@@ -203,6 +212,9 @@ public class DAO {
 		res.next();
 			hotelid = res.getInt("id");
 				
+			res.close();
+			sql.close();
+			
 		return hotelid;
 	}
 
@@ -214,6 +226,9 @@ public class DAO {
 		sql.setString(1, lastname);
 		ResultSet res = sql.executeQuery();
 		
+		res.close();
+		sql.close();
+		
 	}
 
 	public int getLastInsertedCustomerId() throws SQLException {
@@ -223,6 +238,9 @@ public class DAO {
 		ResultSet res = sql.executeQuery();
 			res.next();
 			int lastid = res.getInt("customerid");
+			
+			res.close();
+			sql.close();
 			
 			return lastid;
 		
@@ -235,6 +253,9 @@ public class DAO {
 		sql.setString(1, roomtype);
 		ResultSet res = sql.executeQuery();
 		int roomid = res.getInt("id");
+		
+		res.close();
+		sql.close();
 		
 		return roomid;
 	}
@@ -253,6 +274,10 @@ public class DAO {
 		sql.setString(7, generatepin);
 		sql.setString(8, uniquestring);
 		ResultSet res = sql.executeQuery();
+	
+		res.close();
+		sql.close();
+		
 	}
 	
 	public OverallHotelsDTO getHotelTotalOccupancy(int hotelid) throws SQLException{
@@ -288,6 +313,11 @@ public class DAO {
 		
 		ownerHotel = new OverallHotelsDTO(name, booknum, available);
 		
+		sql.close();
+		hotelname.close();
+		resbooked.close();
+		resavailable.close();
+		
 		return ownerHotel;
 	}
 	
@@ -309,35 +339,61 @@ public class DAO {
 		String access = staffinfo.getString("access");
 		
 		staff = new StaffDTO(fname, lname, pw, access);
+		
+		staffinfo.close();
+		sql.close();
+		
 		return staff;
 	}
 	
-	public void applyDiscount(int roomtypeid, Date start, Date end, int discounted, int hotelid) throws SQLException{
+	public Date getCheckInDate(String pin) throws SQLException{
+		Date date = null;
+		
 		PreparedStatement sql = null;
-		sql = connection.prepareStatement("insert into discount (default, ?, ?, ?, ?, ?);");
-		sql.setInt(1, roomtypeid);
-		sql.setDate(2, start);
-		sql.setDate(3, end);
-		sql.setInt(4, discounted);
-		sql.setInt(5, hotelid);
-		ResultSet res = sql.executeQuery();
-	}
 
-	public int getSinglehotelId(String name, String city) throws SQLException {
-		int hotelid = 0;
+		sql = connection.prepareStatement("select startdate from customerbooking");
+		sql.setString(1, pin);
+		ResultSet staffinfo = sql.executeQuery();
+		
+		date = staffinfo.getDate("startdate");
+		
+		staffinfo.close();
+		sql.close();
+		
+		return date;
+	}
+	
+	public ArrayList<BookingDetailsDTO> getBookingDetails(String pin) throws SQLException{
+		ArrayList<BookingDetailsDTO> bookingdetails = new ArrayList<BookingDetailsDTO>();
 		
 		PreparedStatement sql = null;
-		String query = "select id from hotel " +
-						" where name = ?" +
-						" and city = ?;";
-		sql = connection.prepareStatement(query);
-		sql.setString(1, name);
-		sql.setString(2, city);
+		sql = connection.prepareStatement("select h.name as hotelname, rt.name as roomtype,"
+				+ " cb.startdate, cb.enddate, cb.firstname, cb.lastname from customerbooking cb"
+				+ " join roomtype rt on rt.id = cb.roomtypeid"
+				+ " join hotel h on h.id = cb.hotelid"
+				+ " where cb.pin = ?"
+				+ " group by  h.name, rt.name, cb.startdate, cb.enddate, cb.firstname, cb.lastname");
 		
+		sql.setString(1,pin);
 		ResultSet res = sql.executeQuery();
-		hotelid = res.getInt("id");
-				
-		return hotelid;	
+		
+		while(res.next()){
+			String hotelname = res.getString("hotelname");
+			String roomtype = res.getString("roomtype");
+			Date startdate = res.getDate("startdate");
+			Date enddate = res.getDate("enddate");
+			String firstname = res.getString("firstname");
+			String lastname = res.getString("lastname");
+			
+			BookingDetailsDTO details = new BookingDetailsDTO(hotelname, roomtype, startdate, enddate, firstname, lastname);
+			bookingdetails.add(details);
+			
+		}
+		
+		res.close();
+		sql.close();
+		
+		return bookingdetails;
 	}
 	
 }

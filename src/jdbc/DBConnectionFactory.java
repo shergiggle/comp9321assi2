@@ -9,6 +9,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import Exception.DataSourceException;
 import Exception.ServiceLocatorException;
 
 /**
@@ -23,7 +24,6 @@ public class DBConnectionFactory {
 	private DataSource ds = null;
 	private InitialContext ctx;
 	private Context subctx;
-	private static Connection conn;
 	
 	private DBConnectionFactory() throws ServiceLocatorException{
 		try{
@@ -43,12 +43,11 @@ public class DBConnectionFactory {
 	
 	public static Connection getConnection() throws ServiceLocatorException, SQLException{
 		
-		if(factory==null && conn == null){
+		if(factory==null)
 			factory = new DBConnectionFactory();
-			conn = factory.getDataSource().getConnection();
-		}
+		Connection conn = factory.getDataSource().getConnection();
+		
 		return conn;
 	}
 
 }
-
