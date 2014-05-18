@@ -1,7 +1,6 @@
 package logic;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Date;
 import java.text.ParseException;
@@ -26,7 +25,13 @@ import jdbc.*;
 public class OwnerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private DAO dao;
-    private Connection connection;
+    
+	private Date start = null;
+	private Date end = null;
+	private int discountamount;
+	private int hotelid;
+	private int roomtypeid;
+	
     SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
     static Logger logger = Logger.getLogger(ConsumerServlet.class.getName());
        
@@ -50,10 +55,12 @@ public class OwnerServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@SuppressWarnings("unused")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String forwardPage = "";
-		String message = "";
+		String forwardPage = null;
+		String message = null;
+		
 		String action = request.getParameter("action");
 		
 		if(action.equals(null)){
@@ -70,24 +77,29 @@ public class OwnerServlet extends HttpServlet {
 			String user = request.getParameter("userid");
 			String pw = request.getParameter("password");
 			StaffDTO staff = null;
-			staff = dao.getStaff(user, pw);
+			try {
+				staff = dao.getStaff(user, pw);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			if(staff.getAccess().equals("owner")){
 				//--recounts the total number of rooms booked and available
 				ArrayList<OverallHotelsDTO> availableList = new ArrayList<OverallHotelsDTO>();
 				List<HotelDTO> allHotels = new ArrayList<HotelDTO>();
 				OverallHotelsDTO eachHotel = null;
-				int hotelid = 0;
 				allHotels = dao.getAllHotels();
 				
+				int hotelidcheck = 0;
 				for(HotelDTO hotel : allHotels){
 					try {
-						hotelid = dao.getHotelId(hotel.getName());
+						hotelidcheck = dao.getSinglehotelId(hotel.getName(),hotel.getCity());
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					try {
-						eachHotel = dao.getHotelTotalOccupancy(hotelid);
+						eachHotel = dao.getHotelTotalOccupancy(hotelidcheck);
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -113,9 +125,9 @@ public class OwnerServlet extends HttpServlet {
 		
 		if(action.equals("applydiscount")){
 			//--obtaining all the data from the page
-			String city = request.getParameter("city");
+			String cityname = request.getParameter("city");
 			String hotel = request.getParameter("hotel");
-			String type = request.getParameter("type");
+			String roomtype = request.getParameter("type");
 			
 			String startdate = request.getParameter("startdate");
 			String startmonth = request.getParameter("startmonth");
@@ -124,6 +136,8 @@ public class OwnerServlet extends HttpServlet {
 			String enddate = request.getParameter("enddate");
 			String endmonth = request.getParameter("endmonth");
 			String endyear = request.getParameter("endyear");
+			
+			String amount = request.getParameter("amount");
 			
 			java.sql.Date startingdate = null;
 			try {
@@ -140,38 +154,71 @@ public class OwnerServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 			
+			int discount = Integer.parseInt(amount);
+			
+			//-- Storing a copy of the data for the booking to remember
+			try {
+				this.hotelid = dao.getSinglehotelId(hotel, cityname);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				this.roomtypeid = dao.getRoomtypeid(roomtype);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.start = startingdate;
+			this.end = endingdate;
+			this.discountamount = discount;
+			
 			//--passing all the data to the next page
-			request.setAttribute("city", city);
+			request.setAttribute("city", cityname);
 			request.setAttribute("hotelname", hotel);
-			request.setAttribute("type", type);
+			request.setAttribute("type", roomtype);
 			request.setAttribute("startdate", startingdate);
 			request.setAttribute("enddate", endingdate);
+			request.setAttribute("amount", discount);
+			
 			forwardPage = "ownerConfirm.jsp";
 		}
 		
 		if(action.equals("confirm")){
-			//--presents a success message
-			message = "Discount Applied";
 			//-- insert the new discount
-			
-			
+
+			try {
+				dao.applyDiscount(this.roomtypeid, this.start, this.end, this.discountamount, this.hotelid);
+				// -- success message
+				message = "Discount Applied Successful";
+				//-- clear the data
+				this.hotelid = 0;
+				this.roomtypeid = 0;
+				this.start = null;
+				this.end = null;
+				this.discountamount = 0;
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				message = "Discount Not Applied";
+			}
 			
 			//--recount the total number of rooms available and booked
 			ArrayList<OverallHotelsDTO> availableList = new ArrayList<OverallHotelsDTO>();
 			List<HotelDTO> allHotels = new ArrayList<HotelDTO>();
 			OverallHotelsDTO eachHotel = null;
-			int hotelid = 0;
 			allHotels = dao.getAllHotels();
 			
+			int hotelidcheck = 0;
 			for(HotelDTO hotel : allHotels){
 				try {
-					hotelid = dao.getHotelId(hotel.getName());
+					hotelidcheck = dao.getSinglehotelId(hotel.getName(), hotel.getCity());
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				try {
-					eachHotel = dao.getHotelTotalOccupancy(hotelid);
+					eachHotel = dao.getHotelTotalOccupancy(hotelidcheck);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -189,18 +236,18 @@ public class OwnerServlet extends HttpServlet {
 			ArrayList<OverallHotelsDTO> availableList = new ArrayList<OverallHotelsDTO>();
 			List<HotelDTO> allHotels = new ArrayList<HotelDTO>();
 			OverallHotelsDTO eachHotel = null;
-			int hotelid = 0;
 			allHotels = dao.getAllHotels();
 			
+			int hotelidcheck = 0;
 			for(HotelDTO hotel : allHotels){
 				try {
-					hotelid = dao.getHotelId(hotel.getName());
+					hotelidcheck = dao.getSinglehotelId(hotel.getName(), hotel.getCity());
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				try {
-					eachHotel = dao.getHotelTotalOccupancy(hotelid);
+					eachHotel = dao.getHotelTotalOccupancy(hotelidcheck);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -214,4 +261,13 @@ public class OwnerServlet extends HttpServlet {
 		
 	}
 
+	private java.sql.Date stringtosqldate(String day, String month, String year) throws ParseException{
+		String startDate = day+"-"+month+"-"+year;
+		
+		java.util.Date date = formatter.parse(startDate);
+		java.sql.Date sqlDate = new java.sql.Date(date.getTime()); 
+		
+		return sqlDate;
+		
+	}
 }

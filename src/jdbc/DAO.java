@@ -311,4 +311,33 @@ public class DAO {
 		staff = new StaffDTO(fname, lname, pw, access);
 		return staff;
 	}
+	
+	public void applyDiscount(int roomtypeid, Date start, Date end, int discounted, int hotelid) throws SQLException{
+		PreparedStatement sql = null;
+		sql = connection.prepareStatement("insert into discount (default, ?, ?, ?, ?, ?);");
+		sql.setInt(1, roomtypeid);
+		sql.setDate(2, start);
+		sql.setDate(3, end);
+		sql.setInt(4, discounted);
+		sql.setInt(5, hotelid);
+		ResultSet res = sql.executeQuery();
+	}
+
+	public int getSinglehotelId(String name, String city) throws SQLException {
+		int hotelid = 0;
+		
+		PreparedStatement sql = null;
+		String query = "select id from hotel " +
+						" where name = ?" +
+						" and city = ?;";
+		sql = connection.prepareStatement(query);
+		sql.setString(1, name);
+		sql.setString(2, city);
+		
+		ResultSet res = sql.executeQuery();
+		hotelid = res.getInt("id");
+				
+		return hotelid;	
+	}
+	
 }
