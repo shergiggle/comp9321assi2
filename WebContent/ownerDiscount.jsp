@@ -11,7 +11,13 @@
 <form action="owner" method="POST">
 City: <input type="text" name="city"><br>
 Hotel:<input type="text" name="hotel"><br>
-Room Type:<input type="text" name="type"><br>
+Room Type:<select name="type">
+				<option value="SINGLE">SINGLE</option>
+				<option value="DOUBLE">DOUBLE</option>
+				<option value="QUEEN">QUEEN</option>
+				<option value="EXECUTIVE">EXECUTIVE</option>
+				<option value="SUITE">SUITE</option>
+			</select><br>
 Start: Date<select name="startdate">
 				<c:forEach var="i" begin="1" end="31">
 					<option value="${i }">${i }</option>
