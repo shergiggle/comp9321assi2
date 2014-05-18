@@ -5,20 +5,15 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.logging.Logger;
 
-import logic.*;
 import Exception.*;
 
 public class DAO {
@@ -200,24 +195,6 @@ public class DAO {
 		return tempprice;
 	}
 
-	public int getHotelId(String name) throws SQLException{
-		int hotelid = 0;
-		
-		PreparedStatement sql = null;
-		String query = "select id from hotel where name = ? and city = ?";
-		sql = connection.prepareStatement(query);
-		sql.setString(1, name);
-		
-		ResultSet res = sql.executeQuery();
-		res.next();
-			hotelid = res.getInt("id");
-				
-			res.close();
-			sql.close();
-			
-		return hotelid;
-	}
-
 	public void makeCustomer(String firstname, String lastname) throws SQLException {
 		PreparedStatement sql = null;
 		String query = "insert into customer (default, ? , ?)";
@@ -397,6 +374,7 @@ public class DAO {
 		return bookingdetails;
 	}
 	
+	@SuppressWarnings("unused")
 	public void applyDiscount(int roomtypeid, Date start, Date end, int discounted, int hotelid) throws SQLException{
 		PreparedStatement sql = null;
 		sql = connection.prepareStatement("insert into discount (default, ?, ?, ?, ?, ?);");
@@ -408,7 +386,7 @@ public class DAO {
 		ResultSet res = sql.executeQuery();
 	}
 	
-	public int getSinglehotelId(String name, String city) throws SQLException {
+	public int getHotelId(String name, String city) throws SQLException {
 		int hotelid = 0;
 
 		PreparedStatement sql = null;

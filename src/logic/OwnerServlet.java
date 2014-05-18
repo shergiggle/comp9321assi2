@@ -93,7 +93,7 @@ public class OwnerServlet extends HttpServlet {
 				int hotelidcheck = 0;
 				for(HotelDTO hotel : allHotels){
 					try {
-						hotelidcheck = dao.getSinglehotelId(hotel.getName(),hotel.getCity());
+						hotelidcheck = dao.getHotelId(hotel.getName(),hotel.getCity());
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -158,7 +158,7 @@ public class OwnerServlet extends HttpServlet {
 			
 			//-- Storing a copy of the data for the booking to remember
 			try {
-				this.hotelid = dao.getSinglehotelId(hotel, cityname);
+				this.hotelid = dao.getHotelId(hotel, cityname);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -212,7 +212,7 @@ public class OwnerServlet extends HttpServlet {
 			int hotelidcheck = 0;
 			for(HotelDTO hotel : allHotels){
 				try {
-					hotelidcheck = dao.getSinglehotelId(hotel.getName(), hotel.getCity());
+					hotelidcheck = dao.getHotelId(hotel.getName(), hotel.getCity());
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -241,7 +241,7 @@ public class OwnerServlet extends HttpServlet {
 			int hotelidcheck = 0;
 			for(HotelDTO hotel : allHotels){
 				try {
-					hotelidcheck = dao.getSinglehotelId(hotel.getName(), hotel.getCity());
+					hotelidcheck = dao.getHotelId(hotel.getName(), hotel.getCity());
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

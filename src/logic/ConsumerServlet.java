@@ -2,7 +2,6 @@ package logic;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -17,8 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import Exception.InvalidActionException;
-import Exception.ServiceLocatorException;
+import Exception.*;
 import jdbc.DAO;
 import jdbc.HotelDTO;
 import jdbc.RoomPriceDTO;
@@ -31,7 +29,7 @@ import jdbc.SearchDTO;
 public class ConsumerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private DAO dao;
-    private Connection connection;
+    private String citynamesearched = null;
     SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
     static Logger logger = Logger.getLogger(ConsumerServlet.class.getName());
     /**
@@ -53,6 +51,7 @@ public class ConsumerServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@SuppressWarnings("unused")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String forwardPage = "";
@@ -125,6 +124,7 @@ public class ConsumerServlet extends HttpServlet {
 			
 			roomtypes = request.getParameterValues("selectedrooms");
 			city = request.getParameter("city");
+			this.citynamesearched = city;
 			hotels = new ArrayList<HotelDTO>();
 			ArrayList<RoomPriceDTO> roomprice = new ArrayList<RoomPriceDTO>();
 			//foreach chosen roomtype get price
@@ -169,7 +169,7 @@ public class ConsumerServlet extends HttpServlet {
 			// take roomtypes selected, hotelselected, checkin, checkout
 			//get the hotel id
 			try {
-				hotelid = dao.getHotelId(hotel);
+				hotelid = dao.getHotelId(hotel, this.citynamesearched);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
