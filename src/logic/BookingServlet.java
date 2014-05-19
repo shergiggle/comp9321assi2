@@ -79,9 +79,8 @@ public class BookingServlet extends HttpServlet {
 				}
 				
 				request.setAttribute("details", bookingdetails);
-				forwardPage = "bookingMain.jsp";				
+				forwardPage = "bookingMain.jsp";
 			}
-			
 		}
 		if(action.equals("edit")){
 			//display original
