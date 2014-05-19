@@ -48,11 +48,11 @@
 					<option value="${i }">${i }</option>
 				</c:forEach>
 			</select><br><br>
-	Max Price:<input type="text" name="maxprice">
-	<input type="hidden" value="action" name="search">
-	<input type="submit" name="Search">
-	<input type="hidden" value="action" name="reset">
-	<input type="submit" name="Back to Search">
+	Max Price:<input type="text" name="maxprice"><br><br>
+	<input type="hidden" name="action" value="search">
+	<input type="submit" value="Search">
+	<input type="hidden" name="action" value="reset">
+	<input type="submit" value="Back to Search">
 		
 </form>
 </body>

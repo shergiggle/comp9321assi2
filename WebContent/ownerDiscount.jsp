@@ -54,7 +54,7 @@ Amount: <select name="amount">
 		<c:forEach var="i" begin="00" end="55" step="5">
 			<option value="${i }">${i } %</option>
 		</c:forEach>
-		</select>
+		</select><br><br>
 		
 	<input type="hidden" name="action" value="applydiscount">
 	<input type="submit" value="Apply Discounts">

@@ -1,15 +1,15 @@
+insert into HOTEL values (default, 'Ibis', 'Sydney');
+insert into HOTEL values (default, 'Mecure', 'Melbourne');
+insert into HOTEL values (default, 'Ibis', 'Brisbane');
+insert into HOTEL values (default, 'Ibis', 'Adelaide');
+insert into HOTEL values (default, 'Ibis', 'Hobart');
+
 insert into STAFF values (default, 'steve', 'steve', 'password', 'reception', 1);
 insert into STAFF values (default, 'bob', 'bob', 'password', 'reception', 2);
 insert into STAFF values (default, 'andrew', 'andrew', 'password', 'reception', 3);
 insert into STAFF values (default, 'lauren', 'lauren', 'password', 'reception', 4);
 insert into STAFF values (default, 'kim', 'kim', 'password', 'reception', 5);
 insert into STAFF values (default, 'kate', 'kate', 'password', 'owner', 1);
-
-insert into HOTEL values (default, 'Ibis', 'Sydney');
-insert into HOTEL values (default, 'Mecure', 'Melbourne');
-insert into HOTEL values (default, 'Ibis', 'Brisbane');
-insert into HOTEL values (default, 'Ibis', 'Adelaide');
-insert into HOTEL values (default, 'Ibis', 'Hobart');
 
 insert into ROOMTYPE values (default, 'SINGLE', 70);
 insert into ROOMTYPE values (default, 'DOUBLE', 120);

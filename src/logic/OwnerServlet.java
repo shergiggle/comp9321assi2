@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -55,7 +56,6 @@ public class OwnerServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	@SuppressWarnings("unused")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String forwardPage = null;
@@ -77,13 +77,18 @@ public class OwnerServlet extends HttpServlet {
 			String user = request.getParameter("userid");
 			String pw = request.getParameter("password");
 			StaffDTO staff = null;
+			//System.out.println(user);
+			//System.out.println(pw);
 			try {
+				//System.out.println("hello");
 				staff = dao.getStaff(user, pw);
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			if(staff.getAccess().equals("owner")){
+			//System.out.println("test");
+			//System.out.println(staff.getAccess());
+			if((staff.getAccess()).equals("owner")){
 				//--recounts the total number of rooms booked and available
 				ArrayList<OverallHotelsDTO> availableList = new ArrayList<OverallHotelsDTO>();
 				List<HotelDTO> allHotels = new ArrayList<HotelDTO>();
@@ -259,6 +264,8 @@ public class OwnerServlet extends HttpServlet {
 			forwardPage = "ownerView.jsp";
 		}
 		
+		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/"+forwardPage);
+		dispatcher.forward(request, response);
 	}
 
 	private java.sql.Date stringtosqldate(String day, String month, String year) throws ParseException{

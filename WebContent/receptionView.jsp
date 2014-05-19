@@ -21,11 +21,11 @@
 			<tr>
 				<th>Rooms Occupied</th>
 			</tr>
+			<c:forEach items="${roomsOccupied }" var="room">
 			<tr>
-				<c:forEach items="${roomsOccupied }" var="room">
 					<td>room number</td>
-				</c:forEach>
 			</tr>
+			</c:forEach>
 		</table>
 	</td>
 	<td>
@@ -34,12 +34,12 @@
 				<th>Bookings to Check-In</th>
 				<th>Select</th>
 			</tr>
+			<c:forEach items="${bookingsStillProcess }" var="booking">
 			<tr>
-				<c:forEach items="${bookingsStillProcess }" var="booking">
 					<td>booking name</td>
 					<td><input type="radio" value="${booking.id }"></td>
-				</c:forEach>
 			</tr>
+			</c:forEach>
 		</table>
 	</td>
 	</tr>

@@ -103,5 +103,5 @@ create table discount (
 	primary key (id),
 	foreign key (roomtypeid) references roomtype(id),
 	foreign key (hotelid) references hotel(id),
-	constraint chk_discountedprice check (discountedprice>=0),
+	constraint chk_discountedprice check (discountedprice>=0)
 );

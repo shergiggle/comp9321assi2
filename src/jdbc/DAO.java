@@ -87,6 +87,9 @@ public class DAO {
 		ArrayList<SearchDTO> search = new ArrayList<SearchDTO>();
 		PreparedStatement sql = null;
 		//ResultSet discountPrice = null;
+		
+		//System.out.println(city);
+		//System.out.println(maxprice);
 
 		sql = connection.prepareStatement("select h.id, h.city as hotelname, rt.cost, rt.name as roomtype, count(rt.name) as count"
 				+ " from hotel h join room r on r.hotelid = h.id"
@@ -137,12 +140,13 @@ public class DAO {
 			System.out.print(roomType+"\n\n\n\n");
 			//new query to select hotel id, hotel city, hotelname where rt.name like roomtype
 			sql = connection.prepareStatement("select h.id as hotelid, h.name as hotelname, h.city from hotel h"
-					+ "join room r on r.hotelid = h.id"
-					+ "join roomtype rt on rt.id = r.roomtypeid"
-					+ "where rt.name = ?"
-					+ "group by h.id, h.name, h.city");
+					+ " join room r on r.hotelid = h.id"
+					+ " join roomtype rt on rt.id = r.roomtypeid"
+					+ " where rt.name = ?"
+					+ " group by h.id, h.name, h.city");
 			sql.setString(1, roomType);
 			ResultSet details = sql.executeQuery();
+			details.next();
 			
 			search.add(new SearchDTO(details.getInt("hotelid"), details.getString("city"), details.getString("hotelname"), price ,roomType,count));
 		}
@@ -156,12 +160,12 @@ public class DAO {
 
 	@SuppressWarnings("null")
 	public ArrayList<HotelDTO> getHotelsinCity(String city) throws SQLException {
-		ArrayList<HotelDTO> hotelname = null;
+		ArrayList<HotelDTO> hotelname = new ArrayList<HotelDTO>();
 		PreparedStatement sql = null;
 		String query = "select h.name, h.city"
-				+ "from hotel h"
-				+ "where h.city = ?"
-				+ "group by h.name, h.city";
+				+ " from hotel h"
+				+ " where h.city = ?"
+				+ " group by h.name, h.city";
 		sql = connection.prepareStatement(query);
 		sql.setString(1, city);
 		
@@ -266,22 +270,25 @@ public class DAO {
 											+ " join roomtype rt on ra.roomtypeid = rt.id"
 											+ " join customerbooking cb on (cb.id = ra.customerbookingid)"
 											+ " join hotel h on (cb.hotelid = h.id)"
-											+ " where h.id = ?;");
+											+ " where h.id = ?");
 		sql.setInt(1, hotelid);
 		ResultSet resbooked = sql.executeQuery();
+		resbooked.next();
 		
 	//--number of total rooms for each hotel
 		sql = connection.prepareStatement("select count(r.id) as total from room r " +
 											" join hotel h on h.id = r.hotelid " +
-											" where h.id = ?;");
+											" where h.id = ?");
 		sql.setInt(1, hotelid);
 		ResultSet resavailable = sql.executeQuery();
+		resavailable.next();
 	
 	//--get hotel name
 		sql = connection.prepareStatement("select name from hotel" +
-											" where id = ?;");
+											" where id = ?");
 		sql.setInt(1, hotelid);
 		ResultSet hotelname = sql.executeQuery();
+		hotelname.next();
 		
 		int availum = resavailable.getInt("total");
 		int booknum = resbooked.getInt("booked");
@@ -302,13 +309,14 @@ public class DAO {
 		StaffDTO staff = null;
 		PreparedStatement sql = null;
 		//-- get everything in staff table
-		sql = connection.prepareStatement("select firstname, lastname, password, access " +
+		sql = connection.prepareStatement("select firstname, lastname, password, access, hotelid " +
 											" from staff" +
 											" where firstname = ?" +
-											" and password = ?;");
+											" and password = ?");
 		sql.setString(1, username);
 		sql.setString(2, password);
 		ResultSet staffinfo = sql.executeQuery();
+		staffinfo.next();
 		
 		String fname = staffinfo.getString("firstname");
 		String lname = staffinfo.getString("lastname");
@@ -377,7 +385,7 @@ public class DAO {
 	@SuppressWarnings("unused")
 	public void applyDiscount(int roomtypeid, Date start, Date end, int discounted, int hotelid) throws SQLException{
 		PreparedStatement sql = null;
-		sql = connection.prepareStatement("insert into discount (default, ?, ?, ?, ?, ?);");
+		sql = connection.prepareStatement("insert into discount (default, ?, ?, ?, ?, ?)");
 		sql.setInt(1, roomtypeid);
 		sql.setDate(2, start);
 		sql.setDate(3, end);
@@ -392,12 +400,13 @@ public class DAO {
 		PreparedStatement sql = null;
 		String query = "select id from hotel " +
 				" where name = ?" +
-				" and city = ?;";
+				" and city = ?";
 		sql = connection.prepareStatement(query);
 		sql.setString(1, name);
 		sql.setString(2, city);
 
 		ResultSet res = sql.executeQuery();
+		res.next();
 		hotelid = res.getInt("id");
 		
 		res.close();

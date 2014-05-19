@@ -8,24 +8,18 @@
 <title>Hotel Management</title>
 </head>
 <body>
-	<form action="owner" method="POST">
-		<input type="hidden" name="action" value="discount">
-		<input type="submit" value="New Discounts">
-	</form>
-	${message }
-<table>
-	<tr>
-		<th>Hotel Name</th>
-		<th>Total Rooms Occupied</th>
-		<th>Total Rooms Available</th>
-	</tr>
-	<c:forEach items = "${availabilityList}" var="list">
-	<tr>
-		<td>${list.name }</td>
-		<td>${list.occupied }</td>
-		<td>${list.available }</td>
-	</tr>
+
+<!-- print out the cusomterbooking details -->
+	<c:forEach items="${details}" var="list">
+			<tr>
+				<td>${list.hotelname}</td>
+				<td>${list.roomtype}</td>
+				<td>${list.startdate}</td>
+				<td>${list.enddate}</td>
+				<td>$list.firstname}</td>
+				<td>$list.lastname}</td>
+			</tr>
 	</c:forEach>
-</table>
+
 </body>
 </html>

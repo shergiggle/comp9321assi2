@@ -1,9 +1,7 @@
 package logic;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,7 +25,6 @@ import jdbc.DAO;
 public class BookingServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private DAO dao;
-    private Connection connection;
     SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
     static Logger logger = Logger.getLogger(ConsumerServlet.class.getName());
     private String pin = null;
@@ -82,7 +79,7 @@ public class BookingServlet extends HttpServlet {
 				}
 				
 				request.setAttribute("details", bookingdetails);
-				
+				forwardPage = "bookingMain.jsp";				
 			}
 			
 		}

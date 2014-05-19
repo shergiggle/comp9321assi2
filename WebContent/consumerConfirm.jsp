@@ -20,12 +20,10 @@
 			</tr>
 		<c:forEach items="${cost}" var="list">
 			<tr>
-
 				<td>${city}</td>
-				<td>${cost.price}</td>
+				<td>${list.price}</td>
 				<td>${checkin}</td>
 				<td>${checkout}</td>
-				
 			</tr>
 		</c:forEach>
 		</table><br><br>
@@ -34,7 +32,7 @@
 					<c:forEach items="${resultlist }" var="hotels">
 						<option value="${hotels.name}">${hotels.name}</option>
 					</c:forEach>
-				</select>			
+				</select><br><br>			
 
 
 		<input type="hidden" name="action" value="checkout"> 

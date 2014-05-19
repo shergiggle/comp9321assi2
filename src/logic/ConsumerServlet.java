@@ -63,7 +63,7 @@ public class ConsumerServlet extends HttpServlet {
 		ArrayList<HotelDTO> hotels = new ArrayList<HotelDTO>();
 		String[] roomtypes = null;
 		
-		if(action.equals(null)){
+		if(action == null){
 			try {
 				throw new InvalidActionException();
 			} catch (InvalidActionException e) {
@@ -124,6 +124,8 @@ public class ConsumerServlet extends HttpServlet {
 			
 			roomtypes = request.getParameterValues("selectedrooms");
 			city = request.getParameter("city");
+			String checkinstring = request.getParameter("checkin");
+			String checkoutstring = request.getParameter("checkout"); 
 			this.citynamesearched = city;
 			hotels = new ArrayList<HotelDTO>();
 			ArrayList<RoomPriceDTO> roomprice = new ArrayList<RoomPriceDTO>();
@@ -151,19 +153,22 @@ public class ConsumerServlet extends HttpServlet {
 			request.setAttribute("cost", roomprice);
 			request.setAttribute("city", city);
 			request.setAttribute("resultlist", hotels);
+			request.setAttribute("checkin", checkinstring);
+			request.setAttribute("checkout", checkoutstring);
 			
-			forwardPage = "ConsumerConfirm.jsp";
+			forwardPage = "consumerConfirm.jsp";
 			
 		}
 		if(action.equals("checkout")){
 			// take roomtypes selected, hotelselected, checkin, checkout
 			hotel = request.getParameter("selectedHotel");
-			forwardPage = "ConsumerCheckout.jsp";
+			forwardPage = "consumerCheckout.jsp";
 		}
 		if(action.equals("complete")){
 			String firstname = request.getParameter("firstname");
 			String lastname = request.getParameter("lastname");
 			String email = request.getParameter("email");
+			
 			int hotelid = 0;
 			String generatepin = PINGenerator.generate();
 			// take roomtypes selected, hotelselected, checkin, checkout

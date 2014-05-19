@@ -9,23 +9,11 @@
 </head>
 <body>
 	<form action="reception" method="POST">
-	Booking ID: ${bookingid }
-	Room To Check-In:<input type="text" name="checkinroom">
-	<input type="hidden" name="action" value="checkinroom">
+	Room To Check-Out:<input type="text" name="checkoutroom">
+	<input type="hidden" name="action" value="checkoutroom">
 	<input type="submit" value="Check-In"><br>
 	<input type="hidden" name="action=" value="cancel">
 	<input type="submit" value="Cancel"><br><br>
 	</form>
-	Rooms Available for Checkin<br>
-	<table>
-		<tr>
-		 <th>Room Number</th>
-		</tr>
-		<tr>
-		<c:forEach items="${availableRooms }" var="ar">
-			<td>${ar.roomnumber }</td>
-		</c:forEach>
-		</tr>
-	</table>
 </body>
 </html>

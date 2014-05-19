@@ -8,7 +8,7 @@
 <title>Hotel Management</title>
 </head>
 <body>
-<form action="ConsumerServlet" method="POST">
+<form action="consumer" method="POST">
 <!-- search results shown here -->
 	<table>
 		<tr>
@@ -18,22 +18,22 @@
 			<th>Cost</th>
 			<th>Select</th>
 		</tr>
-		<tr>
 		<c:forEach items="${resultlist }" var="list">
+		<tr>
 			<td>${list.city}</td>
 			<td>${list.roomtype}</td>
 			<td>${list.count}</td>
 			<td>${list.price}</td>
-			<td><input type="checkbox" name="selectedrooms[]" value="${list.roomtype}">
+			<td><input type="checkbox" name="selectedrooms" value="${list.roomtype}">
 			</td>
-		</c:forEach>
 		</tr>
+		</c:forEach>
 	</table>
 	<input type="hidden" name="action" value="confirm">
 	<input type="submit" value="Confirm">
 	<input type="hidden" name="city" value="${city}" >
-	<input type="hidden" name=checkin value= "${checkin}">
-	<input type="hidden" name=checkout value= "${checkout}">
+	<input type="hidden" name="checkin" value= "${checkin}">
+	<input type="hidden" name="checkout" value= "${checkout}">
 	<input type="hidden" name="action" value="reset">
 	<input type="submit" value="Back to Search">
 </form>
