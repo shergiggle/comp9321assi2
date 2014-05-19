@@ -139,12 +139,13 @@ public class DAO {
 			int count = allSelectCount.get(roomType);
 			System.out.print(roomType+"\n\n\n\n");
 			//new query to select hotel id, hotel city, hotelname where rt.name like roomtype
-			sql = connection.prepareStatement("select h.id as hotelid, h.name as hotelname, h.city from hotel h"
+			sql = connection.prepareStatement("select h.id as hotelid, h.name as hotelname, h.city from hotel h, d.discountedprice"
 					+ " join room r on r.hotelid = h.id"
 					+ " join roomtype rt on rt.id = r.roomtypeid"
-					+ " where rt.name = ?"
-					+ " group by h.id, h.name, h.city");
-			sql.setString(1, roomType);
+					+ " join discount d on rt.id = d.roomtypeid"
+					+ " where rt.name = ? and d.startdate < CURRENT_DATE and CURRENT_DATE < d.enddate"
+					+ " group by h.id, h.name, h.city, d.discountedprice");
+				sql.setString(1, roomType);
 			ResultSet details = sql.executeQuery();
 			details.next();
 			
@@ -204,9 +205,8 @@ public class DAO {
 		sql = connection.prepareStatement(query);
 		sql.setString(1, firstname);
 		sql.setString(1, lastname);
-		ResultSet res = sql.executeQuery();
+		sql.executeUpdate();
 		
-		res.close();
 		sql.close();
 		
 	}
@@ -232,6 +232,7 @@ public class DAO {
 		sql = connection.prepareStatement(query);
 		sql.setString(1, roomtype);
 		ResultSet res = sql.executeQuery();
+		res.next();
 		int roomid = res.getInt("id");
 		
 		res.close();
@@ -253,9 +254,8 @@ public class DAO {
 		sql.setString(6, lastname);
 		sql.setString(7, generatepin);
 		sql.setString(8, uniquestring);
-		ResultSet res = sql.executeQuery();
-	
-		res.close();
+		sql.executeUpdate();
+		
 		sql.close();
 		
 	}
@@ -315,16 +315,23 @@ public class DAO {
 		sql.setString(1, username);
 		sql.setString(2, password);
 		ResultSet staffinfo = sql.executeQuery();
-		staffinfo.next();
-		
-		String fname = staffinfo.getString("firstname");
-		String lname = staffinfo.getString("lastname");
-		String pw = staffinfo.getString("password");
-		String access = staffinfo.getString("access");
-		int hotelid = staffinfo.getInt("hotelid");
-		
-		staff = new StaffDTO(fname, lname, pw, access, hotelid);
-		
+		System.out.println("staffinfo has some results");
+		String fname = null;
+		String lname = null;
+		String pw = null;
+		String access = null;
+		int hotelid = 0;
+		if (staffinfo.next()) {
+			System.out.println("staffinfo has some results");
+			fname = staffinfo.getString("firstname");
+			lname = staffinfo.getString("lastname");
+			pw = staffinfo.getString("password");
+			access = staffinfo.getString("access");
+			hotelid = staffinfo.getInt("hotelid");
+			
+			staff = new StaffDTO(fname, lname, pw, access, hotelid);
+		}
+		System.out.println(staff != null);
 		staffinfo.close();
 		sql.close();
 		
@@ -382,16 +389,17 @@ public class DAO {
 		return bookingdetails;
 	}
 	
-	@SuppressWarnings("unused")
 	public void applyDiscount(int roomtypeid, Date start, Date end, int discounted, int hotelid) throws SQLException{
 		PreparedStatement sql = null;
-		sql = connection.prepareStatement("insert into discount (default, ?, ?, ?, ?, ?)");
+		sql = connection.prepareStatement("insert into discount values (default, ?, ?, ?, ?, ?)");
 		sql.setInt(1, roomtypeid);
 		sql.setDate(2, start);
 		sql.setDate(3, end);
 		sql.setInt(4, discounted);
 		sql.setInt(5, hotelid);
-		ResultSet res = sql.executeQuery();
+		sql.executeUpdate();
+		
+		sql.close();
 	}
 	
 	public int getHotelId(String name, String city) throws SQLException {
@@ -421,9 +429,11 @@ public class DAO {
 		PreparedStatement sql = null;
 		String query = "select roomnumber, roomtypeid, availability" +
 						" from room" +
-						" where hotelid = ?";
+						" where hotelid = ?" +
+						" and availability = ?";
 		sql = connection.prepareStatement(query);
 		sql.setInt(1, hotelid);
+		sql.setString(2, "available");
 		ResultSet res = sql.executeQuery();
 		
 		while(res.next()){
@@ -441,6 +451,9 @@ public class DAO {
 			RoomDTO room = new RoomDTO(roomnumber, type, availability, hotelid);
 			roomlist.add(room);
 		}
+		
+		res.close();
+		sql.close();
 		return roomlist;
 	}
 
@@ -480,7 +493,150 @@ public class DAO {
 			BookingDetailsDTO booking = new BookingDetailsDTO(bookingid, hotelname, type, startdate, enddate, firstname, lastname);
 			bookinglist.add(booking);
 		}
+		
+		res.close();
+		sql.close();
+		
 		return bookinglist;
+	}
+	
+public void applyCheckin(int roomnum, int bookingid, int hotelid) throws SQLException{
+		
+		PreparedStatement sql1 = null;
+		PreparedStatement sql2 = null;
+		PreparedStatement sql3 = null;
+		String query = "update room" +
+						" set availability = ?" +
+						" where roomnumber = ?" +
+						" and hotelid = ?";
+		sql1 = connection.prepareStatement(query);
+		sql1.setString(1, "occupied");
+		sql1.setInt(2, roomnum);
+		sql1.setInt(3, hotelid);
+		sql1.executeUpdate();
+		
+		query = "select id, roomtypeid from room" +
+				" where roomnumber = ?" +
+				" and hotelid = ?";
+		sql2 = connection.prepareStatement(query);
+		sql2.setInt(1, roomnum);
+		sql2.setInt(2, hotelid);
+		ResultSet rinfo = sql2.executeQuery();
+		rinfo.next();
+		int roomid = rinfo.getInt("id");
+		int roomtypeid = rinfo.getInt("roomtypeid");
+		rinfo.close();
+		
+		query = "insert into roomavailability values (default, ?, ?, ?, ?)";
+		sql3 = connection.prepareStatement(query);
+		sql3.setInt(1, roomid);
+		sql3.setInt(2, bookingid);
+		sql3.setInt(3, roomtypeid);
+		sql3.setInt(4, 0);
+		sql3.executeUpdate();
+		
+		sql1.close();
+		sql2.close();
+		sql3.close();
+	}
+	
+	public ArrayList<RoomDTO> getRoomsAvailableforBookingid(int bookingid, int hotelid) throws SQLException{
+		ArrayList<RoomDTO> roomslist = new ArrayList<RoomDTO>();
+		PreparedStatement sql1 = null;
+		PreparedStatement sql2 = null;
+		PreparedStatement sql3 = null;
+		
+		String query = "select roomtypeid" +
+						" from customerbooking" +
+						" where id = ?";
+		sql1 = connection.prepareStatement(query);
+		sql1.setInt(1, bookingid);
+		ResultSet typeid = sql1.executeQuery();
+		typeid.next();
+		int rtid = typeid.getInt("roomtypeid");
+		typeid.close();
+		
+		query = "select name" +
+				" from roomtype" +
+				" where id =?";
+		sql2 = connection.prepareStatement(query);
+		sql2.setInt(1, rtid);
+		ResultSet typen = sql2.executeQuery();
+		typen.next();
+		String roomtypename = typen.getString("name");
+		typen.close();
+		
+		query = "select roomnumber" +
+						" from room" +
+						" where availability = 'available'" +
+						" and hotelid = ?" +
+						" and roomtypeid = ?";
+		sql3 = connection.prepareStatement(query);
+		sql3.setInt(1, hotelid);
+		sql3.setInt(2, rtid);
+		ResultSet roominfo = sql3.executeQuery();
+		while(roominfo.next()){
+			int rn = roominfo.getInt("roomnumber");
+			RoomDTO room = new RoomDTO(rn, roomtypename, "available", hotelid);
+			roomslist.add(room);
+		}
+		roominfo.close();
+		sql1.close();
+		sql2.close();
+		sql3.close();
+		return roomslist;
+	}
+	
+	public RoomDTO checkRoomAvailability(int roomnumber, int hotelid) throws SQLException{
+		RoomDTO room = null;
+		PreparedStatement sql1 = null;
+		PreparedStatement sql2 = null;
+		
+		String query = "select roomtypeid, availability" +
+						" from room" +
+						" where roomnumber = ?" +
+						" and hotelid = ?";
+		sql1 = connection.prepareStatement(query);
+		sql1.setInt(1, roomnumber);
+		sql1.setInt(2, hotelid);
+		ResultSet rtid = sql1.executeQuery();
+		rtid.next();
+		int roomtypeid = rtid.getInt("roomtypeid");
+		String available = rtid.getString("availability");
+		rtid.close();
+		
+		query = "select name" +
+				" from roomtype" +
+				" where id = ?";
+		sql2 = connection.prepareStatement(query);
+		sql2.setInt(1, roomtypeid);
+		ResultSet rname = sql2.executeQuery();
+		rname.next();
+		String name = rname.getString("name");
+		rname.close();
+		
+		sql1.close();
+		sql2.close();
+		room = new RoomDTO(roomnumber, name, available, hotelid);
+
+		return room;
+	}
+	
+	public void applyCheckout(int roomnumber, int hotelid) throws SQLException{
+		
+		PreparedStatement sql = null;
+		
+		String query = "update room" +
+				" set availability = ?" +
+				" where roomnumber = ?" +
+				" and hotelid = ?";
+		sql = connection.prepareStatement(query);
+		sql.setString(1, "available");
+		sql.setInt(2, roomnumber);
+		sql.setInt(3, hotelid);
+		sql.executeUpdate();
+		
+		sql.close();
 	}
 	
 }

@@ -236,3 +236,10 @@ insert into ROOM values (default, 4, 139, 'available', 5);
 insert into ROOM values (default, 4, 140, 'available', 5);
 insert into ROOM values (default, 5, 141, 'available', 5);
 insert into ROOM values (default, 5, 142, 'available', 5);
+
+insert into CUSTOMERBOOKING values (default, 1, 1,'2014-05-14', '2014-05-18', 'Mike', 'Lala', 'sdfdh', '456789');
+insert into CUSTOMERBOOKING values (default, 2, 2,'2014-05-14', '2014-05-18', 'Mike', 'Lala', 'sdsfgh', '456789');
+insert into CUSTOMERBOOKING values (default, 3, 3,'2014-05-14', '2014-05-18', 'Mike', 'Lala', 'qwert', '456789');
+insert into CUSTOMERBOOKING values (default, 4, 4,'2014-05-14', '2014-05-18', 'Mike', 'Lala', 'sdfghkjk', '456789');
+insert into CUSTOMERBOOKING values (default, 5, 5,'2014-05-14', '2014-05-18', 'Mike', 'Lala', 'zxcvbn', '456789');
+

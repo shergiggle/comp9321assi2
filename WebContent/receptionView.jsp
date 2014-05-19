@@ -9,13 +9,15 @@
 </head>
 <body>
 	<form action="reception" method="POST">
-		<input type="hidden" name="action" value="checkin">
-		<input type="submit" value="Room Check-In">
+	<input type="submit" name="action" value="Logout"><br><br>
+	</form>
+	<form action="reception" method="POST">
 		<input type="hidden" name="action" value="checkout">
 		<input type="submit" value="Room Check-Out">
-		<input type="hidden" name="action" value="logout">
-		<input type="submit" value="Logout">
-	</form><br><br>
+	</form>
+	<form action="reception" method="POST">
+		<input type="hidden" name="action" value="checkin">
+		<input type="submit" value="Room Check-In"><br><br>
 	${message}<br>
 <table>
 	<tr>
@@ -48,12 +50,13 @@
 				<td>${booking.firstname}</td>
 				<td>${booking.lastname}</td>
 				<td>${booking.roomtype}</td>
-				<td><input type="radio" value="${booking.id}"></td>
+				<td><input type="radio" name="bookingid" value="${booking.id}"></td>
 			</tr>
 			</c:forEach>
 		</table>
 	</td>
 	</tr>
 </table>
+</form>
 </body>
 </html>

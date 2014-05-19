@@ -128,12 +128,15 @@ public class ConsumerServlet extends HttpServlet {
 			String checkoutstring = request.getParameter("checkout"); 
 			this.citynamesearched = city;
 			hotels = new ArrayList<HotelDTO>();
+			ArrayList<String> roomtypetemp = new ArrayList<String>();
+			
 			ArrayList<RoomPriceDTO> roomprice = new ArrayList<RoomPriceDTO>();
 			//foreach chosen roomtype get price
 			
 			for(String room : roomtypes){
 				try {
 					RoomPriceDTO tempPrice = dao.getRoomTypePrice(room);
+					roomtypetemp.add(tempPrice.getRoomtype());					
 					roomprice.add(tempPrice);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -155,6 +158,7 @@ public class ConsumerServlet extends HttpServlet {
 			request.setAttribute("resultlist", hotels);
 			request.setAttribute("checkin", checkinstring);
 			request.setAttribute("checkout", checkoutstring);
+			request.setAttribute("roomtype", roomtypetemp);
 			
 			forwardPage = "consumerConfirm.jsp";
 			
@@ -162,12 +166,16 @@ public class ConsumerServlet extends HttpServlet {
 		if(action.equals("checkout")){
 			// take roomtypes selected, hotelselected, checkin, checkout
 			hotel = request.getParameter("selectedHotel");
+			roomtypes = request.getParameterValues("selectedrooms");
+			request.setAttribute("roomtype", roomtypes);
 			forwardPage = "consumerCheckout.jsp";
 		}
 		if(action.equals("complete")){
 			String firstname = request.getParameter("firstname");
 			String lastname = request.getParameter("lastname");
 			String email = request.getParameter("email");
+			//roomtypes = request.getParameterValues("roomtype");
+			//System.out.println(roomtypes);
 			
 			int hotelid = 0;
 			String generatepin = PINGenerator.generate();

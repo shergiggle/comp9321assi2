@@ -9,11 +9,12 @@
 </head>
 <body>
 	<form action="reception" method="POST">
-	Room To Check-Out:<input type="text" name="checkoutroom">
+	<input type="submit" name="action" value="Cancel">
+	</form>
+	<form action="reception" method="POST">
 	<input type="hidden" name="action" value="checkoutroom">
-	<input type="submit" value="Check-In"><br>
-	<input type="hidden" name="action=" value="cancel">
-	<input type="submit" value="Cancel"><br><br>
+	<input type="submit" value="Check-Out"><br><br>
+	Room To Check-Out:<input type="text" name="checkoutroom">
 	</form>
 </body>
 </html>

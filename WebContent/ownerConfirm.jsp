@@ -15,7 +15,7 @@
 	Room Type: ${type }<br>
 	Start Date: ${startdate }<br>
 	End Date: ${enddate }<br>
-	Amount: ${amount }%<br>
+	New Room Amount: $ ${amount }<br>
 	<input type="hidden" name="action" value="confirm">
 	<input type="submit" value="Confirm">
 	<input type="hidden" name="action" value="reset">

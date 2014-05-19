@@ -9,7 +9,13 @@
 </head>
 <body>
 <form action="owner" method="POST">
-City: <input type="text" name="city"><br>
+City: <select name="city">
+			<option value="Sydney">Sydney</option>
+			<option value="Melbourne">Melbourne</option>
+			<option value="Brisbane">Brisbane</option>
+			<option value="Adelaid">Adelaide</option>
+			<option value="Hobart">Hobart</option>
+		</select><br>
 Hotel:<input type="text" name="hotel"><br>
 Room Type:<select name="type">
 				<option value="SINGLE">SINGLE</option>
@@ -50,14 +56,12 @@ End: date<select name="enddate">
 		</c:forEach>
 		</select><br>
 		
-Amount: <select name="amount">
-		<c:forEach var="i" begin="00" end="55" step="5">
-			<option value="${i }">${i } %</option>
-		</c:forEach>
-		</select><br><br>
+New Room Amount:<input type="number" name="amount"><br><br>
 		
 	<input type="hidden" name="action" value="applydiscount">
 	<input type="submit" value="Apply Discounts">
+</form>
+<form action="owner" method="POST">	
 	<input type="hidden" name="action=" value="cancel">
 	<input type="submit" value="Cancel">
 </form>

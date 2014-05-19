@@ -193,15 +193,15 @@ public class OwnerServlet extends HttpServlet {
 			//-- insert the new discount
 
 			try {
-				dao.applyDiscount(this.roomtypeid, this.start, this.end, this.discountamount, this.hotelid);
-				// -- success message
-				message = "Discount Applied Successful";
+				dao.applyDiscount(this.roomtypeid, this.start, this.end, this.discountamount, this.hotelid);				
 				//-- clear the data
 				this.hotelid = 0;
 				this.roomtypeid = 0;
 				this.start = null;
 				this.end = null;
 				this.discountamount = 0;
+				// -- success message
+				message = "Discount Applied Successful";
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

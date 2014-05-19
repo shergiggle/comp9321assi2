@@ -61,7 +61,7 @@ create table customerbooking(
 	);
 	
 create table roomavailability (
-	id int not null generated always as identity,
+	id int not null generated always as identity(start with 1, increment by 1),
 	roomid int not null,
 	customerbookingid int not null,
 	roomtypeid int not null,
@@ -94,7 +94,7 @@ create table staff(
 );
 
 create table discount (
-	id int not null generated always as identity,
+	id int not null generated always as identity(start with 1, increment by 1),
 	roomtypeid int not null,
 	startdate date not null,
 	enddate date not null,
