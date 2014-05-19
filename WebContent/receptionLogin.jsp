@@ -8,6 +8,7 @@
 <title>Hotel Management</title>
 </head>
 <body>
+${message}<br>
 	<form action="reception" method="POST">
 		User ID:<input type="text" name="userid"><br>
 		Password:<input type="text" name="password"><br>

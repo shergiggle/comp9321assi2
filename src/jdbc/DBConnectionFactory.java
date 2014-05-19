@@ -9,8 +9,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import Exception.DataSourceException;
-import Exception.ServiceLocatorException;
+import Exception.*;
 
 /**
  * @author srikumarv

@@ -3,6 +3,7 @@ package jdbc;
 import java.sql.Date;
 
 public class BookingDetailsDTO {
+private int id;
 private String hotelname;
 private String roomtype;
 private Date startdate;
@@ -11,7 +12,8 @@ private String firstname;
 private String lastname;
 
 
-public BookingDetailsDTO(String hotelname, String roomtype, Date startdate, Date enddate, String firstname, String lastname){
+public BookingDetailsDTO(int id, String hotelname, String roomtype, Date startdate, Date enddate, String firstname, String lastname){
+	setId(id);
 	setHotelname(hotelname);
 	setRoomtype(roomtype);
 	setStartdate(startdate);
@@ -55,6 +57,14 @@ public String getLastname() {
 }
 public void setLastname(String lastname) {
 	this.lastname = lastname;
+}
+
+public int getId() {
+	return id;
+}
+
+public void setId(int id) {
+	this.id = id;
 }
 
 	

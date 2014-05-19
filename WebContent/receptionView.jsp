@@ -13,36 +13,47 @@
 		<input type="submit" value="Room Check-In">
 		<input type="hidden" name="action" value="checkout">
 		<input type="submit" value="Room Check-Out">
-	</form>
-	<table>
+		<input type="hidden" name="action" value="logout">
+		<input type="submit" value="Logout">
+	</form><br><br>
+	${message}<br>
+<table>
 	<tr>
 	<td>
+	Rooms Available
 		<table>
 			<tr>
-				<th>Rooms Occupied</th>
+				<th>Room Number</th>
+				<th>Room Type</th>
 			</tr>
-			<c:forEach items="${roomsOccupied }" var="room">
+			<c:forEach items="${roomsOccupied}" var="room">
 			<tr>
-					<td>room number</td>
+				<td>${room.roomNumber}</td>
+				<td>${room.type}</td>
 			</tr>
 			</c:forEach>
 		</table>
 	</td>
 	<td>
+	Bookings to Check-In
 		<table>
 			<tr>
-				<th>Bookings to Check-In</th>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Room Type</th>
 				<th>Select</th>
 			</tr>
-			<c:forEach items="${bookingsStillProcess }" var="booking">
+			<c:forEach items="${bookingsStillProcess}" var="booking">
 			<tr>
-					<td>booking name</td>
-					<td><input type="radio" value="${booking.id }"></td>
+				<td>${booking.firstname}</td>
+				<td>${booking.lastname}</td>
+				<td>${booking.roomtype}</td>
+				<td><input type="radio" value="${booking.id}"></td>
 			</tr>
 			</c:forEach>
 		</table>
 	</td>
 	</tr>
-	</table>
+</table>
 </body>
 </html>

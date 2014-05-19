@@ -158,7 +158,6 @@ public class DAO {
 		return search;	
 	}
 
-	@SuppressWarnings("null")
 	public ArrayList<HotelDTO> getHotelsinCity(String city) throws SQLException {
 		ArrayList<HotelDTO> hotelname = new ArrayList<HotelDTO>();
 		PreparedStatement sql = null;
@@ -354,7 +353,7 @@ public class DAO {
 		
 		PreparedStatement sql = null;
 		sql = connection.prepareStatement("select h.name as hotelname, rt.name as roomtype,"
-				+ " cb.startdate, cb.enddate, cb.firstname, cb.lastname from customerbooking cb"
+				+ " cb.startdate, cb.enddate, cb.firstname, cb.lastname, cb.id from customerbooking cb"
 				+ " join roomtype rt on rt.id = cb.roomtypeid"
 				+ " join hotel h on h.id = cb.hotelid"
 				+ " where cb.pin = ?"
@@ -370,8 +369,9 @@ public class DAO {
 			Date enddate = res.getDate("enddate");
 			String firstname = res.getString("firstname");
 			String lastname = res.getString("lastname");
+			int bookingid = res.getInt("id");
 			
-			BookingDetailsDTO details = new BookingDetailsDTO(hotelname, roomtype, startdate, enddate, firstname, lastname);
+			BookingDetailsDTO details = new BookingDetailsDTO(bookingid, hotelname, roomtype, startdate, enddate, firstname, lastname);
 			bookingdetails.add(details);
 			
 		}
@@ -413,6 +413,74 @@ public class DAO {
 		sql.close();
 
 		return hotelid;	
+	}
+
+	public ArrayList<RoomDTO> getRoomavailableinHotel(int hotelid) throws SQLException {
+		ArrayList<RoomDTO> roomlist = new ArrayList<RoomDTO>();
+		
+		PreparedStatement sql = null;
+		String query = "select roomnumber, roomtypeid, availability" +
+						" from room" +
+						" where hotelid = ?";
+		sql = connection.prepareStatement(query);
+		sql.setInt(1, hotelid);
+		ResultSet res = sql.executeQuery();
+		
+		while(res.next()){
+			int roomnumber = res.getInt("roomnumber");
+			int roomtypeid = res.getInt("roomtypeid");
+			String availability = res.getString("availability");
+		
+			sql = connection.prepareStatement("select name from roomtype where id = ?");
+			sql.setInt(1, roomtypeid);
+			ResultSet typeres = sql.executeQuery();
+			typeres.next();
+			String type = typeres.getString("name");
+			typeres.close();
+			
+			RoomDTO room = new RoomDTO(roomnumber, type, availability, hotelid);
+			roomlist.add(room);
+		}
+		return roomlist;
+	}
+
+	public ArrayList<BookingDetailsDTO> getBookingAvailable(int hotelid) throws SQLException {
+		ArrayList<BookingDetailsDTO> bookinglist = new ArrayList<BookingDetailsDTO>();
+		
+		PreparedStatement sql = null;
+		String query = "select id, roomtypeid, firstname, lastname, startdate, enddate" +
+						" from customerbooking" +
+						" where hotelid = ?";
+		sql = connection.prepareStatement(query);
+		sql.setInt(1, hotelid);
+		ResultSet res = sql.executeQuery();
+		
+		sql = connection.prepareStatement("select name from hotel where id = ?");
+		sql.setInt(1, hotelid);
+		ResultSet hotelres = sql.executeQuery();
+		hotelres.next();
+		String hotelname = hotelres.getString("name");
+		hotelres.close();
+		
+		while(res.next()){
+			int bookingid = res.getInt("id");
+			int roomtypeid = res.getInt("roomtypeid");
+			String firstname = res.getString("firstname");
+			String lastname = res.getString("lastname");
+			Date startdate = res.getDate("startdate");
+			Date enddate = res.getDate("enddate");
+			
+			sql = connection.prepareStatement("select name from roomtype where id = ?");
+			sql.setInt(1, roomtypeid);
+			ResultSet typeres = sql.executeQuery();
+			typeres.next();
+			String type = typeres.getString("name");
+			typeres.close();
+			
+			BookingDetailsDTO booking = new BookingDetailsDTO(bookingid, hotelname, type, startdate, enddate, firstname, lastname);
+			bookinglist.add(booking);
+		}
+		return bookinglist;
 	}
 	
 }

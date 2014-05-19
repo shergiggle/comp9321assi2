@@ -1,13 +1,17 @@
 package logic;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import Exception.InvalidActionException;
+import jdbc.*;
+import Exception.*;
 
 /**
  * Servlet implementation class ReceptionServlet
@@ -15,6 +19,9 @@ import Exception.InvalidActionException;
 @WebServlet("/reception")
 public class ReceptionServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+    private DAO dao;
+    
+    private int staffhotelid;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -40,6 +47,7 @@ public class ReceptionServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		String forwardPage = "";
 		String action = request.getParameter("action");
+		String message = "";
 		
 		if(action.equals(null)){
 			try {
@@ -50,7 +58,46 @@ public class ReceptionServlet extends HttpServlet {
 			}
 		}
 		if(action.equals("login")){
-			forwardPage = "receptionView.jsp";
+			//--Check that the user has reception access
+			String user = request.getParameter("userid");
+			String pw = request.getParameter("password");
+			StaffDTO staff = null;
+			ArrayList<RoomDTO> roomavailable = new ArrayList<RoomDTO>();
+			ArrayList<BookingDetailsDTO> bookingavailable = new ArrayList<BookingDetailsDTO>();
+			try {
+				//System.out.println("hello");
+				staff = dao.getStaff(user, pw);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			if((staff.getAccess()).equals("reception")){
+				this.staffhotelid = staff.getHotelid();
+				// -- Show list of all available rooms for the day at the hotel
+				try {
+					roomavailable = dao.getRoomavailableinHotel(staffhotelid);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				// -- Show list of all bookings for the day
+				try {
+					bookingavailable = dao.getBookingAvailable(staffhotelid);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				request.setAttribute("roomsOccupied", roomavailable);
+				request.setAttribute("bookingsStillProcess", bookingavailable);
+				forwardPage = "receptionView.jsp";
+			} else {
+				message = "Invalid Login Details";
+				request.setAttribute("message", message);
+				forwardPage = "receptionLogin.jsp";
+			}
 		}
 		
 		if(action.equals("checkin")){
@@ -72,7 +119,12 @@ public class ReceptionServlet extends HttpServlet {
 		if(action.equals("cancel")){
 			forwardPage = "receptionView.jsp";
 		}
-		
+		 if(action.equals("logout")){
+			 this.staffhotelid = 0;
+			 message = "Logout Successful";
+			 request.setAttribute("message", message);
+			 forwardPage = "receptionLogin.jsp";
+		 }
 	}
 
 }
