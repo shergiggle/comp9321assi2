@@ -87,9 +87,6 @@ public class DAO {
 		ArrayList<SearchDTO> search = new ArrayList<SearchDTO>();
 		PreparedStatement sql = null;
 		//ResultSet discountPrice = null;
-		
-		//System.out.println(city);
-		//System.out.println(maxprice);
 
 		sql = connection.prepareStatement("select h.id, h.city as hotelname, rt.cost, rt.name as roomtype, count(rt.name) as count"
 				+ " from hotel h join room r on r.hotelid = h.id"
@@ -139,17 +136,29 @@ public class DAO {
 			int count = allSelectCount.get(roomType);
 			System.out.print(roomType+"\n\n\n\n");
 			//new query to select hotel id, hotel city, hotelname where rt.name like roomtype
-			sql = connection.prepareStatement("select h.id as hotelid, h.name as hotelname, h.city from hotel h, d.discountedprice"
-					+ " join room r on r.hotelid = h.id"
-					+ " join roomtype rt on rt.id = r.roomtypeid"
-					+ " join discount d on rt.id = d.roomtypeid"
-					+ " where rt.name = ? and d.startdate < CURRENT_DATE and CURRENT_DATE < d.enddate"
-					+ " group by h.id, h.name, h.city, d.discountedprice");
-				sql.setString(1, roomType);
+			sql = connection.prepareStatement("select h.id as hotelid, h.name as hotelname, h.city from hotel h"
+					+ "join room r on r.hotelid = h.id"
+					+ "join roomtype rt on rt.id = r.roomtypeid"
+					+ "where rt.name = ?"
+					+ "group by h.id, h.name, h.city");
+			sql.setString(1, roomType);
 			ResultSet details = sql.executeQuery();
 			details.next();
-			
-			search.add(new SearchDTO(details.getInt("hotelid"), details.getString("city"), details.getString("hotelname"), price ,roomType,count));
+			details.getInt("discountedprice");//reads discountedprice into stream
+			if(!details.wasNull()){//checks if last value read into stream was null
+				search.add(new SearchDTO(details.getInt("hotelid"), details.getString("city"), details.getString("hotelname"), details.getInt("discountedprice") ,roomType,count));
+			}
+			else{
+			sql = connection.prepareStatement("select h.id as hotelid, h.name as hotelname, h.city from hotel h"
+					+ "join room r on r.hotelid = h.id"
+					+ "join roomtype rt on rt.id = r.roomtypeid"
+					+ "where rt.name = ?"
+					+ "group by h.id, h.name, h.city");
+			sql.setString(1, roomType);
+			details = sql.executeQuery();
+
+				search.add(new SearchDTO(details.getInt("hotelid"), details.getString("city"), details.getString("hotelname"), price ,roomType,count));
+			}
 		}
 
 		resAll.close();
